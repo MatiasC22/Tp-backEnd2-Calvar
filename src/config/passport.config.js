@@ -6,7 +6,7 @@ import userModel from '../models/user.js';
 import { githubCliSecret, githubCliId } from '../servidor.js';
 
 
-const localStrategy = local.Strategy // Defino la estrategia local 
+const localStrategy = local.Strategy 
 
 const initalizatePassport = () => {
     passport.use('register', new localStrategy({passReqToCallback: true, usernameField:'email'}, async(req,username, password, done)=>{
@@ -15,7 +15,7 @@ const initalizatePassport = () => {
 
             const findUser = await userModel.findOne({email: email})
 
-            // Si Usuario Existe 
+            
             if (!findUser){
                 
                 const user = await userModel.create({
@@ -58,9 +58,7 @@ const initalizatePassport = () => {
         callbackURL: "http://localhost:8080/api/sessions/githubcallback"
     }, async(accessToken, refreshToken, profile, done) => {
         try {
-            console.log(accessToken);
-            console.log(refreshToken);
-            console.log(profile);
+            
     
             let user = await userModel.findOne({ email: profile._json.email });
             if (!user) {
@@ -68,7 +66,7 @@ const initalizatePassport = () => {
                     first_name: profile._json.name,
                     last_name: " ", // Dato no proporcionado por GitHub
                     email: profile._json.email, 
-                    password: '1234', // Generar contraseña por defecto
+                    password: createHash('defaultPassword'),
                     age: 18 // Dato no proporcionado por GitHub
                 });
                 done(null, user);
